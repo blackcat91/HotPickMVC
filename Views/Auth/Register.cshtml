@@ -1,0 +1,38 @@
+﻿@model UserModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<form method="post">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary"> Register</h2>
+            <hr />
+        </div>
+      
+        <div class="mb-3">
+            <label asp-for="UserName"></label>
+            <input asp-for="UserName" class="form-control" />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" type="email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" type="password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+        
+    </div> 
+</form> 
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" /> 
+    }
+}

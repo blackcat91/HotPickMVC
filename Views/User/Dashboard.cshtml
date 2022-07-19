@@ -1,0 +1,83 @@
+﻿@model UserPageModel
+@{
+    ViewData["title"] = "Dashboard";
+}
+
+
+
+<form method="post">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary"> Dashboard</h2>
+            <hr />
+        </div>
+        <input type="hidden" asp-for="User!.Id" class="form-control" />
+        <div class="mb-3">
+            <label asp-for="User!.UserName"></label>
+            <input disabled asp-for="User!.UserName" class="form-control" />
+            <span asp-validation-for="User!.UserName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="User!.Email"></label>
+            <input disabled asp-for="User!.Email" class="form-control" />
+            <span asp-validation-for="User!.Email" class="text-danger"></span>
+        </div>
+
+
+        
+        <a class="btn btn-primary mx-1" asp-action="ChangePassword">Change Password</a>
+        <button class="btn btn-outline-success mx-1" id="edit">Edit</button>
+        <button class="btn btn-outline-primary mx-1 " disabled id="submit" type="submit">Submit</button>
+
+
+    </div>
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+    }
+
+
+    <div class="row">
+
+        @foreach (var port in Model.Portfolios)
+    {
+        <div class="col-lg-5 m-1 ">
+            <a class="btn" asp-controller="Portfolio" asp-action="Edit" asp-route-portId="@port.Id">
+                <h2 class="text-success">
+                    @port.Name
+                </h2>
+                <div class="row">
+                    @for (var i = 0; i < port.Stocks!.Count; i++)
+                    {
+                        @if (i < 3)
+                        {
+                            <div class="col-lg-4 m-1">
+                                <a class="btn btn-success w-100" asp-controller="Stocks" asp-action="GetStock" asp-route-ticker="@port.Stocks[i].ticker">
+                                    <h2>@port.Stocks[i].ticker</h2>
+                                    <h4>@port.Stocks[i].company</h4>
+                                    <h3>@port.Stocks[i].overall</h3>
+                                </a>
+
+                            </div>
+                        }
+
+                    }
+
+                </div>
+            </a>
+        </div>
+    }
+
+
+
+</div>
+ <br />
+ <br />
+
+<script type="text/javascript" src="~/js/dashboard.js">
+
+</script>

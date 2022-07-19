@@ -1,0 +1,268 @@
+﻿@model AllStockDataModel
+
+
+@{
+
+    ViewData["Title"] = Model.Stock.company;
+    ViewData["Closing"] = Model.Bars.Last().BarData[4];
+}
+
+
+<div class=" p-1 text-center ">
+    <div class="row py-1">
+        <div class="col-md-6">
+            <h4>@Model.Stock.ticker</h4>
+        </div>
+        <div class="col-md-6">
+            <h4>@Model.Stock.company</h4>
+        </div>
+
+    </div>
+
+    @if (Model.Portfolios!.Count > 0)
+    {
+        <div class="row justify-content-evenly ">
+            <div class="col-md-3 my-1 stockData">
+                <button class="btn-success add  w-50">Add</button>
+                <div class="addStock">
+
+                    @foreach (var portfolio in Model.Portfolios!)
+                    {
+
+                       
+                         
+                            <button id="@portfolio.Id" class="btn btn-primary m-1 addBtn">
+
+                                @portfolio.Name
+
+                            </button>
+                   
+
+                        <script type="text/javascript">
+                            $("#@portfolio.Id").click((e) => {
+                                var portfolio  = "@portfolio.Id"
+                                var stock = "@Model.Stock!.ticker";
+                                
+
+                                
+                                    $.post("/Stocks/AddStock", {
+                                        stock: stock, portfolio: portfolio
+                                    }, (data) => {
+                                       
+
+                                    }).catch((e) => {
+                                        console.log('Failed!!!')
+                                    });
+
+                                    
+                            });
+                        </script>
+
+
+
+                    }
+
+                </div>
+            </div>
+            <div class="col-md-3 my-1 stockData">
+                <button class="btn-danger remove w-50 ">Remove  </button>
+                <div class="removeStock">
+
+                    @foreach (var portfolio in Model.Portfolios!)
+                    {
+
+                       
+                         
+                            <button class="@portfolio.Id btn btn-primary m-1" >
+
+                                @portfolio.Name
+
+                            </button>
+                   
+
+                        <script type="text/javascript">
+                            $(".@portfolio.Id").click((e) => {
+                                var portfolio  = "@portfolio.Id"
+                                var stock = "@Model.Stock!.ticker"
+                                
+
+                                
+                                    $.post("/Stocks/RemoveStock", {
+                                        stock: stock, portfolio: portfolio  
+                                    }, (data) => {
+                                       
+
+                                    }).catch((e) => {
+                                        console.log('Failed!!!')
+                                    });
+      
+                            });
+                        </script>
+
+
+
+                    }
+                </div>
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <br />
+        <br />
+    }
+
+    <div class="row py-1">
+        <div class="col-md-6">
+            <h2>Price: $@ViewData["Closing"]</h2>
+        </div>
+        <div class="col-md-6">
+            <h2>Hot Score: @Model.Stock.overall    </h2>
+        </div>
+
+    </div>
+
+
+
+
+</div>
+
+
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+<script src="https://code.highcharts.com/stock/modules/drag-panes.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/modules/accessibility.js"></script>
+<script src="https://code.highcharts.com/stock/js/themes/dark-green.js"></script>
+<div id="chart">
+</div>
+
+
+<style>
+    .chart {
+        height: 500px;
+        min-width: 400px;
+    }
+</style>
+
+<script type="text/javascript">
+
+    var ohlc = [], volumes = [];
+    var groupingUnits = [[
+        'day',                         // unit name
+        [1]                             // allowed multiples
+    ], [
+        'month',
+        [1, 2, 3, 4, 6]
+    ]];
+</script>
+
+@foreach (var b in Model.Bars)
+{
+    <script>
+        ohlc.push([new Date(@b.BarData[0].Year, @b.BarData[0].Month - 1, @b.BarData[0].Day, @b.BarData[0].Hour, @b.BarData[0].Minute, @b.BarData[0].Second ).getTime(), @b.BarData[1], @b.BarData[2], @b.BarData[3], @b.BarData[4]]);
+    </script>
+
+}
+
+@foreach (var b in Model.Volumes)
+{
+    <script>
+        volumes.push([new Date(@b.Date.Year, @b.Date.Month - 1, @b.Date.Day, @b.Date.Hour, @b.Date.Minute, @b.Date.Second ).getTime(), @b.Volume]);
+    </script>
+
+}
+
+<script>
+    
+    Highcharts.stockChart('chart', {
+
+        rangeSelector: {
+            selected: 1
+        },
+
+        title: {
+            text: '@Model.Stock.ticker Historical'
+        },
+
+        yAxis: [{
+            labels: {
+                align: 'right',
+                x: -3
+            },
+            title: {
+                text: 'OHLC'
+            },
+            height: '60%',
+            lineWidth: 2,
+            resize: {
+                enabled: true
+            }
+        }, {
+            labels: {
+                align: 'right',
+                x: -3
+            },
+            title: {
+                text: 'Volume'
+            },
+            top: '65%',
+            height: '35%',
+            offset: 0,
+            lineWidth: 2
+        }],
+
+        tooltip: {
+            split: true
+        },
+
+        series: [{
+            type: 'candlestick',
+            name: '@Model.Stock.ticker',
+            data: ohlc,
+            dataGrouping: {
+                units: groupingUnits
+            }
+        }, {
+            type: 'column',
+            name: 'Volume',
+            data: volumes,
+            yAxis: 1,
+            dataGrouping: {
+                units: groupingUnits
+            }
+        }]
+    })
+</script>
+
+
+<div class="container m-2">
+    @foreach (var news in @Model.News)
+    {
+        <a href="@news.ArticleUrl">
+            <div class="row art p-1 m-2">
+
+
+                <div class="col-md-3 mx-1 p-1">
+                    <img src=@(news.LargeImageUrl != null ? news.LargeImageUrl.ToString(): "/images/stoc.jpg") width="100%" />
+                    <p></p>
+                </div>
+                <div class="col-md-8 mx-1 text-center p-1">
+                    <h3>@news.Headline</h3>
+                    <h4>@news.UpdatedAtUtc.ToLocalTime().ToString()</h4>
+                    <h5>@news.Author</h5>
+                </div>
+
+
+            </div>
+        </a>
+    }
+</div>
+
+
+<script src="~/js/addRemove.js" type="text/javascript">
+</script>
+
+
+

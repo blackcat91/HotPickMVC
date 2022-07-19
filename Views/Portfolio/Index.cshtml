@@ -1,0 +1,44 @@
+﻿@model List<PortfolioModel>
+@{
+    ViewData["Title"] = "Portfolio";
+}
+@if(Model.Count > 0)
+{
+    <div class="row">
+        @foreach(var portfolio in Model)
+        {
+            
+           <div class="col-lg-5 m-1 ">
+               <a class="btn" asp-controller="Portfolio" asp-action="Edit" asp-route-portId="@portfolio.Id">
+            <h2 class="text-success">
+                @portfolio.Name
+            </h2>
+            <div class="row">
+                @for(var i=0; i < portfolio.Stocks.Count; i++)
+                {
+                            @if(i < 3)
+                            {
+                                 <div class="col-lg-4 m-1">
+                        <a class="btn btn-success w-100" asp-controller="Stocks" asp-action="GetStock" asp-route-ticker="@portfolio.Stocks[i].ticker">
+                        <h2>@portfolio.Stocks[i].ticker</h2>
+                        <h4>@portfolio.Stocks[i].company</h4>
+                        <h3>@portfolio.Stocks[i].overall</h3>
+                        </a>
+
+                    </div>
+                            }
+                           
+                }
+
+            </div>
+            </a>
+        </div>
+        
+        }
+    </div>
+    
+}
+<a class="btn btn-secondary" asp-controller="Portfolio" asp-action="Create">Create</a>
+
+                        <br />
+                        <br />

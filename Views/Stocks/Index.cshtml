@@ -1,0 +1,45 @@
+﻿@model List<StockModel>
+@{
+    ViewData["Title"] = "Stocks";
+
+}
+
+
+
+    <div class="row main" >
+        @foreach (var stock in Model)
+        {
+
+            <div class="col-lg-3 col-md-4 col-sm-6 p-1 text-center">
+                <a class="btn btn-success mx-2 mx-sm-1 w-100" asp-controller="Stocks" asp-action="GetStock" asp-route-ticker="@stock.ticker">
+                    <h4>@stock.ticker</h4>
+                    <h6>@stock.company</h6>
+                    <h4>@stock.overall</h4>
+                </a>
+
+
+            </div>
+        }
+
+    </div>
+
+    <br />
+
+<section style="height:10%; d-flex ">
+    
+        @if (ViewData["prev"] != null)
+        {
+            <a class="btn btn-primary mx-2" asp-controller="Stocks" asp-action="Index" asp-route-id="@ViewData["prev"]" > Prev</a>
+        }
+        @if((decimal)ViewData["maxPages"] > (Int32)ViewData["page"])
+        {
+            <a class="btn btn-primary mx-2" asp-controller="Stocks" asp-action="Index" asp-route-id="@ViewData["next"]" > Next</a>
+        }
+        
+</section >
+
+<br />
+
+<style>
+   
+</style>

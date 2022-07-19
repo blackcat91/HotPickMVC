@@ -1,0 +1,61 @@
+﻿@model PortfolioModel
+@{
+
+    ViewData["title"] = Model.Name;
+}
+
+<div class="row justify-content-center">
+    <form method="post">
+
+       
+    <div class="mb-3 col-lg-8 mx-1">
+        
+        <input type="hidden" asp-for="Id" class="form-control" />
+        <input type="hidden" asp-for="HeatScore" class="form-control" />
+        <input type="hidden" asp-for="Stocks" class="form-control" />
+        <label asp-for="Name"></label>
+
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="col-lg-2 mx-1 mt-4">
+        <button type="submit" class="btn btn-primary">Edit</button>
+    </div>
+     </form>
+</div>
+
+
+
+<div class="row">
+    @if (Model.HeatScore != null)
+    {
+        <h4>Heat Score</h4>
+        <h4>@Model.HeatScore</h4>
+    }
+
+    @if (Model.Stocks.Count > 0)
+    {
+
+        @for (var i = 0; i < Model.Stocks.Count; i++)
+        {
+
+            <div class="col-lg-3 m-1">
+                <a class="btn btn-success w-100" asp-controller="Stocks" asp-action="GetStock" asp-route-ticker="@Model.Stocks[i].ticker">
+                    <h2>@Model.Stocks[i].ticker</h2>
+                    <h4>@Model.Stocks[i].company</h4>
+                    <h3>@Model.Stocks[i].overall</h3>
+                </a>
+
+            </div>
+
+
+        }
+    }
+
+
+</div>
+
+ <br />
+                        <br />
+
+
