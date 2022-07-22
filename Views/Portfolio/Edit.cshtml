@@ -24,7 +24,11 @@
      </form>
 </div>
 
-
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+    }
 
 <div class="row">
     @if (Model.HeatScore != null)
