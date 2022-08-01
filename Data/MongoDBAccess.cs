@@ -30,8 +30,8 @@ namespace HotPickMVC.Data
             {
                 var file = System.IO.File.ReadAllText(Path.GetTempPath() + "token.json");
                 Jwt? jwt = JsonConvert.DeserializeObject<Jwt>(file);
-                Console.WriteLine(jwt!.Token);
-                if (jwt.Expiry > DateTime.UtcNow)
+                
+                if (jwt!.Expiry > DateTime.UtcNow)
                 {
                    
                     return jwt;
